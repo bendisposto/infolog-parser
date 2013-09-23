@@ -73,7 +73,13 @@ jar {
  include '**/*.java'
 }
 
-compileJava.dependsOn genParser
+task patches << {
+  ant.patch(patchfile: 'patches/position.patch', originalfile: 'build/temp/de/hhu/stups/sablecc/patch/PositionedNode.java', failonerror:'true')
+}
 
+
+compileJava { 
+ dependsOn = ['genParser', 'patches'] 
+}
 
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
