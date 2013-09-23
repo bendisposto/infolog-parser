@@ -44,10 +44,9 @@ public class PrologLexer extends Lexer {
 
 		if (comment == null) {
 			comment = (TComment) token;
-			commentBuffer = new StringBuilder(token.getText());
+			commentBuffer = new StringBuilder();
 			token = null;
 		} else {
-			commentBuffer.append(token.getText());
 			if (token instanceof TCommentEnd) {
 				comment.setEndPos(token.getEndPos());
 				String text = commentBuffer.toString();
@@ -57,6 +56,7 @@ public class PrologLexer extends Lexer {
 				commentBuffer = null;
 				state = State.NORMAL;
 			} else {
+				commentBuffer.append(token.getText());
 				token = null;
 			}
 		}
