@@ -50,6 +50,7 @@ sourceSets {
 }
 
 
+
 task genParser(type:JavaExec) {
     doFirst{ file('build/temp').mkdirs() }
     inputs.dir new File('src/main/resources/grammars')
@@ -70,6 +71,8 @@ jar {
  from sourceSets.main.toString()
  include '**/*.java'
 }
+
+compileJava.dependsOn genParser
 
 
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
