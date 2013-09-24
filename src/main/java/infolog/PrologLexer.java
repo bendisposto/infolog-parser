@@ -1,18 +1,21 @@
 package infolog;
 
+import infolog.lexer.Lexer;
+import infolog.lexer.LexerException;
+import infolog.node.EOF;
+import infolog.node.TComment;
+import infolog.node.TCommentEnd;
+import infolog.node.Token;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PushbackReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import infolog.lexer.Lexer;
-import infolog.lexer.LexerException;
-import infolog.node.EOF;
-import infolog.node.TBody;
-import infolog.node.TComment;
-import infolog.node.TCommentEnd;
-import infolog.node.Token;
 
 public class PrologLexer extends Lexer {
 
@@ -63,10 +66,41 @@ public class PrologLexer extends Lexer {
 
 	}
 
+	private static final String readFile(final File machine)
+			throws FileNotFoundException {
+		final InputStreamReader inputStreamReader = new InputStreamReader(
+				new FileInputStream(machine));
+
+		final StringBuilder builder = new StringBuilder();
+		final char[] buffer = new char[1024];
+		int read;
+		try {
+			while ((read = inputStreamReader.read(buffer)) >= 0) {
+				builder.append(String.valueOf(buffer, 0, read));
+			}
+		} catch (IOException e) {
+
+		} finally {
+			try {
+				inputStreamReader.close();
+			} catch (IOException e) {
+			}
+		}
+		String content = builder.toString();
+		return content.replaceAll("\r\n", "\n");
+	}
+
+	public static List<Token> lexFile(String filename)
+			throws FileNotFoundException, IOException {
+		String text = readFile(new File(filename));
+		return lex(text);
+	}
+
 	public static List<Token> lex(String input) {
 		ArrayList<Token> tokens = new ArrayList<Token>();
 
-		Lexer l = new PrologLexer(new PushbackReader(new StringReader(input)));
+		Lexer l = new PrologLexer(new PushbackReader(new StringReader(input),
+				input.length()));
 		try {
 			do {
 				Token t;
