@@ -2,7 +2,7 @@ Package infolog;
 
 
 Helpers
-  comment_start = '/**';
+  comment_start = '/** ';
   comment_end = '*/';
   all_chars = [0 .. 0xffff];
 
