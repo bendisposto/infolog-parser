@@ -1,14 +1,18 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'eclipse'
-apply plugin: 'signing'
 
 project.version = '0.0.1-SNAPSHOT'
 project.group = 'de.hhu.stups'
 project.archivesBaseName = 'infolog-parser'
 
+
 configurations {
     sablecc
+}
+
+repositories {
+    mavenCentral()
 }
 
 jar {
@@ -20,7 +24,7 @@ configurations.all {
 }
 
 dependencies {
-    sablecc(group: 'de.stups', name: 'sablecc', version: '3.2.10')
+    sablecc(group: 'de.hhu.stups', name: 'sablecc', version: '3.2.10')
     testCompile 'junit:junit:4.8.2'
 }
 
@@ -54,9 +58,9 @@ task genParser(type:JavaExec) {
      args = ['-d','build/temp','src/main/resources/extract.scc']
 }
 
-jar {   
+jar {
  include '**/*.class'
- exclude '**.*.scc' 
+ exclude '**.*.scc'
  from 'build/temp'
  include '**/*.dat'
  from sourceSets.main.toString()
@@ -71,15 +75,21 @@ task patches << {
   ant.patch(patchfile: 'patches/position.patch', originalfile: 'build/temp/de/hhu/stups/sablecc/patch/PositionedNode.java', failonerror:'true')
 }
 
-compileJava { 
- dependsOn = ['genParser', 'patches'] 
+compileJava {
+ dependsOn = ['genParser', 'patches']
 }
+
+
+
+sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
+
+if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
+  
+apply plugin: 'signing'
 
 signing {
     sign configurations.archives
 }
-
-sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
 
 uploadArchives {
   repositories {
@@ -125,4 +135,5 @@ uploadArchives {
       }
     }
   }
+}
 }
