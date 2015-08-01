@@ -84,6 +84,8 @@ compileJava {
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs)
 
 if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
+
+println "Configured upload task"
   
 apply plugin: 'signing'
 
