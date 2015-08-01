@@ -5,6 +5,8 @@ before_install:
 - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in pubring.gpg.enc -out pubring.gpg -d
 - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in gradle.properties.enc -out gradle.properties -d
 
+script: uploadArchives 
+
 env:
   global:
     secure: ASP6NEr5NGygJwxSliy611Mfi3hgwgCrkAMJ6dtiteMT4G67WKTmSufWrEihaeWlkp+XIiSoF2w7VYq9KFi5ihy4cytfihlm3Se6dhaoFFwbxdUecxevjUVb0EMhmlY0M3oLfKRVjCfjlE1Ssvrvjas1+H8/yfWhfkXD8e7iVXk=
